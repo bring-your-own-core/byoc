@@ -1120,6 +1120,8 @@ module chip(
                 currenttype = "`PICORV32_TILE"
             elif (PITON_ARIANE):
                 currenttype = "`ARIANE_RV64_TILE"
+            elif (PITON_WARPV):
+                currenttype = "`WARPV_TILE"
             else:
                 currenttype = "`SPARC_TILE"
 

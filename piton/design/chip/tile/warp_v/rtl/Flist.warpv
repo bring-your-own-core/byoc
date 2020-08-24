@@ -1,0 +1,4 @@
+spout/warp-v_openpiton.sv
+warpv_reset.v
++incdir+include/
++incdir+spout/

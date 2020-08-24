@@ -176,6 +176,7 @@ Getopt::Long::Configure ('no_auto_abbrev') ;
         'ariane' => 0,
         'pico' => 0,
         'pico_het' => 0,
+        'warpv' => 0,
         'post_process_cmd' => [],
         'pre_process_cmd' => [],
         'reg_count' => 0,
@@ -336,6 +337,7 @@ GetOptions (\%opt,
             'ariane!',
             'pico!',
             'pico_het!',
+            'warpv!',
             'sparcv9!',
             'rv32!',
             'rv64!',
@@ -353,16 +355,23 @@ GetOptions (\%opt,
 
 die ("DIE. -ariane and -pico/-pico_het cannot be set simultaneously") if ($opt{ariane} && ($opt{pico} || $opt{pico_het})) ;
 die ("DIE. -pico and -pico_het cannot both be set") if ($opt{pico} && $opt{pico_het}) ;
+die ("DIE. -warpv and -pico/-pico-het/-ariane cannot be set simultaneously") if ($opt{warpv} && ($opt{pico}|| $opt{pico_het} || $opt{ariane}));
+
+if ($opt{warpv}) {
+  `make -C $ENV{PITON_ROOT}/piton/design/chip/tile/warp_v` ;
+  die("DIE. warp-v compilation failed (in sandpiper)!") if($?) ;
+}
 
 # Setting ost1 by default. This works better than default to 1
 # for heterogeneous-ISA stuff
-if (!$opt{pico} && !$opt{ariane}) {
+if (!$opt{pico} && !$opt{ariane} && !$opt{warpv}) {
   $opt{ost1} = 1 ;
 }
 
 push (@{$opt{config_cpp_args}}, "-DFLIST_OST1")     if ($opt{ost1} || $opt{pico_het}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_PICO")     if ($opt{pico} || $opt{pico_het}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_ARIANE")   if ($opt{ariane}) ;
+push (@{$opt{config_cpp_args}}, "-DFLIST_WARPV")    if ($opt{warpv}) ;
 push (@{$opt{config_cpp_args}}, "-DFLIST_ORAM")     if ($opt{oram}) ;
 
 ################################################################################
@@ -1549,7 +1558,7 @@ sub generic_sim_build
       $build_cmd .= "--top-module cmp_top " ;
       $build_cmd .= "-Wno-fatal " ;
       $build_cmd .= "-Wno-BLKANDNBLK " ;
-      $build_cmd .= "-Wno-TIMESCALEMOD " ;
+      # $build_cmd .= "-Wno-TIMESCALEMOD " ;
       $build_cmd .= "-DPITON_DPI " ;
       $build_cmd .= "--unroll-count 256 " ;
       $build_cmd .= "-CFLAGS -DVERILATOR " ;
@@ -2278,7 +2287,7 @@ sub assemble_diag
     if ($opt{rv32}) {
       # RISCV flow for RV32
       if (!$opt{rv32_target_triple}) {
-        if ($opt{pico}) {
+        if ($opt{pico} || $opt{warpv}) {
           $ENV{RV32_TARGET_TRIPLE} = "riscv32-unknown-elf" ;
         }
       } else {
@@ -2288,11 +2297,14 @@ sub assemble_diag
         if ($opt{pico}) {
           $ENV{RV32_MARCH} = "rv32ima" ;
         }
+        elsif ($opt{warpv}) {
+          $ENV{RV32_MARCH} = "rv32im" ;
+        }
       } else {
-        $ENV{RV32_MARCH} = $opt{rv32_march} ;
+          $ENV{RV32_MARCH} = $opt{rv32_march} ;
       }
       if (!$opt{rv32_mabi}) {
-        if ($opt{pico}) {
+        if ($opt{pico} || $opt{warpv}) {
           $ENV{RV32_MABI} = "ilp32" ;
         }
       } else {
@@ -2805,12 +2817,14 @@ sub parse_args
   $ENV{PITON_PICO}     = $opt{pico};
   $ENV{PITON_PICO_HET} = $opt{pico_het};
   $ENV{PITON_ARIANE}   = $opt{ariane};
+  $ENV{PITON_WARPV}    = $opt{warpv};
   push (@{$opt{config_rtl}}, "PITON_OST1")     if ($opt{ost1});
   push (@{$opt{config_rtl}}, "PITON_PICO")     if ($opt{pico});
   push (@{$opt{config_rtl}}, "PITON_PICO")     if ($opt{pico_het});
   push (@{$opt{config_rtl}}, "PITON_PICO_HET") if ($opt{pico_het});
   push (@{$opt{config_rtl}}, "PITON_ARIANE")   if ($opt{ariane});
   push (@{$opt{config_rtl}}, "WT_DCACHE")      if ($opt{ariane});
+  push (@{$opt{config_rtl}}, "PITON_WARPV")    if ($opt{warpv});
 
   my $pton_x_tiles="";
   my $pton_y_tiles="";
@@ -2842,6 +2856,8 @@ sub parse_args
         push (@{$opt{config_rtl}}, "RTL_PICO" . $i);
     } elsif ($opt{ariane}) {
         push (@{$opt{config_rtl}}, "RTL_ARIANE" . $i);
+    } elsif ($opt{warpv}) {
+        push (@{$opt{config_rtl}}, "RTL_WARPV" . $i);
     } elsif ($opt{ost1}) {
         push (@{$opt{config_rtl}}, "RTL_SPARC" . $i);
     }
@@ -3136,6 +3152,10 @@ VERILOG COMPILATION RELATED
            this specifies that the ARIANE RV64GC core shall be used instead of OpenSPARC.
            in this case, programs are compiled and assembled using the RISCV GCC toolchain.
 
+    -warpv 
+           this specifies that the WARPV core shall be used instead of OpenSPARC.
+           in this case, programs are compiled and assembled using the RISCV GCC toolchain.
+
 VERILOG RUNTIME RELATED
 
     -vcd/-novcd
@@ -3189,7 +3209,7 @@ midas is the diag assembler
 
 RISCV GCC
 
-this is the compiler used for RISC-V cores (e.g., when the -pico or -ariane switches are specified).
+this is the compiler used for RISC-V cores (e.g., when the -pico, -ariane or -warpv switches are specified).
 
     -uart_dmw
            use this switch when compiling code for Pitonstream. this will add load

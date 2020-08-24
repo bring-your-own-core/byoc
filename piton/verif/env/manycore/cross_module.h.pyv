@@ -104,6 +104,7 @@ for i in range(PITON_NUM_TILES):
     `define PICO_CORE%d       `TILE%d.g_picorv32_core.core
     `define CCX_TRANSDUCER%d  `TILE%d.g_sparc_core.ccx_l15_transducer
     `define PICO_TRANSDUCER%d `TILE%d.g_picorv32_core.pico_l15_transducer
+    `define WARPV_CORE%d      `TILE%d.g_warpv_core.core
     `define L15_TOP%d         `TILE%d.l15.l15
     `define L15_PIPE%d        `TILE%d.l15.l15.pipeline
     `define DMBR%d            `TILE%d.dmbr_ins

@@ -62,7 +62,9 @@ PITON_OST1     = int(os.environ.get('PITON_OST1', '0'))
 PITON_ARIANE   = int(os.environ.get('PITON_ARIANE', '0'))
 PITON_PICO     = int(os.environ.get('PITON_PICO', '0'))
 PITON_PICO_HET = int(os.environ.get('PITON_PICO_HET', '0'))
+PITON_WARPV    = int(os.environ.get('PITON_WARPV', '0'))
 
+# TODO : not considered for WARPV yet
 if PITON_ARIANE or PITON_PICO:
     NUM_THREADS = PITON_NUM_TILES
 else:

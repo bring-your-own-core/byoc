@@ -1070,6 +1070,51 @@ print(str)
 `endif // ifdef PITON_ARIANE
   end
   endgenerate
+  generate
+if (TILE_TYPE == `WARPV_TILE) begin : g_warpv_core
+`ifdef PITON_WARPV
+    ///////////////////
+    //   WARPV Core  //
+    ///////////////////
+    wire warpv_int;
+
+    warpv_openpiton core(
+        .clk                                 (clk_gated),
+        .reset_op_in                         (rst_n_f),
+        .l15_transducer_ack                  (l15_transducer_ack),
+        .l15_transducer_header_ack           (l15_transducer_header_ack),
+        .transducer_l15_rqtype               (transducer_l15_rqtype),
+        .transducer_l15_amo_op               (transducer_l15_amo_op),
+        .transducer_l15_size                 (transducer_l15_size),
+        .transducer_l15_val                  (transducer_l15_val),
+        .transducer_l15_address              (transducer_l15_address),
+        .transducer_l15_data                 (transducer_l15_data),
+        .transducer_l15_nc                   (transducer_l15_nc),
+        .transducer_l15_threadid             (transducer_l15_threadid),
+        .transducer_l15_prefetch             (transducer_l15_prefetch),
+        .transducer_l15_invalidate_cacheline (transducer_l15_invalidate_cacheline),
+        .transducer_l15_blockstore           (transducer_l15_blockstore),
+        .transducer_l15_blockinitstore       (transducer_l15_blockinitstore),
+        .transducer_l15_l1rplway             (transducer_l15_l1rplway),
+        .transducer_l15_data_next_entry      (transducer_l15_data_next_entry),
+        .transducer_l15_csm_data             (transducer_l15_csm_data),
+        .l15_transducer_val                  (l15_transducer_val),
+        .l15_transducer_returntype           (l15_transducer_returntype),
+        .l15_transducer_data_0               (l15_transducer_data_0),
+        .l15_transducer_data_1               (l15_transducer_data_1),
+        .transducer_l15_req_ack              (transducer_l15_req_ack),
+        .warpv_int                           (warpv_int)
+    );
+
+    warpv_reset warpv_reset(
+        .gclk(clk_gated),
+        .rst_n(rst_n_f),
+        .spc_grst_l(spc_grst_l)
+    );
+
+`endif // ifdef PITON_WARPV
+end
+endgenerate
 
 
     //////////

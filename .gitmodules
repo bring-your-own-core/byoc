@@ -4,3 +4,6 @@
 [submodule "aws"]
 	path = piton/design/aws
 	url = https://github.com/PrincetonUniversity/openpiton-aws.git
+[submodule "piton/design/chip/tile/warp_v/submodule"]
+	path = piton/design/chip/tile/warp_v/submodule
+	url = https://github.com/shivampotdar/warp-v.git
