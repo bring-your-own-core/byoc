@@ -23,7 +23,7 @@ Description: Peripheral address map for OpenPiton+BlackParrot configurations.
         <name>mem</name>
         <base>0x80000000</base>
         <!-- 1 GB -->
-        <length>0x40000000</length>
+        <length>0x08000000</length>
     </port>
     <port>
         <name>iob</name>
