@@ -2676,6 +2676,7 @@ sub parse_args
             'gui!',
             'log_all!',
             'debug_all!',
+            'debug_pp!',
             'ibm!',
             'ed_enable!',
             'ed_sync_method=s',
@@ -2900,6 +2901,9 @@ sub parse_args
   #
   push (@{$opt{sim_run_args}}, "-gui") if ($opt{gui}) ;
   push (@{$opt{vcs_build_args}}, "-debug_all") if ($opt{debug_all}) ;
+  push (@{$opt{vcs_build_args}}, "-debug_pp") if ($opt{debug_pp}) ;
+  push (@{$opt{vcs_build_args}}, "-CFLAGS \"-I/mnt/users/ssd1/homes/svijay97/BlackParrot/black-parrot-sdk/include -std=c++14\"") ;
+  push (@{$opt{vcs_build_args}}, "/mnt/users/ssd1/homes/svijay97/BlackParrot/black-parrot-sdk/lib/libdromajo_cosim.a") ;
 
   # Push optional execution drafting enable
   push (@{$opt{midas_args}}, "-DED_ENABLE") if ($opt{ed_enable});
