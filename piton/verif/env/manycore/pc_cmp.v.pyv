@@ -258,8 +258,8 @@ endtask // get_thread_status
                 end
 
                 always @(posedge clk) begin
-                      spc0_inst_done         <= `BLACKPARROT_CORE0.core.be.calculator.commit_pkt.instret;
-                      spc0_phy_pc_w          <= 48'($signed(48'(`BLACKPARROT_CORE0.core.be.calculator.commit_pkt.pc)));
+                      spc0_inst_done         <= `BLACKPARROT_CORE0.be.calculator.commit_pkt_cast_o.instret;
+                      spc0_phy_pc_w          <= 48'($signed(48'(`BLACKPARROT_CORE0.be.calculator.commit_pkt_cast_o.pc)));
                 end
         `else
         `ifdef RTL_PICO0

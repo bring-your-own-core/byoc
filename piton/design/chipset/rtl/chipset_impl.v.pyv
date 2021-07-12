@@ -946,8 +946,8 @@ uart_top        uart_top (
 `endif // PITONSYS_NO_MC
 
     // Uncomment to connect to the switch
-    // .uart_timeout_en(uart_timeout_en),
-    .uart_timeout_en            ( 1'b1                                  ),
+    .uart_timeout_en(uart_timeout_en),
+    // .uart_timeout_en            ( 1'b1                                  ),
 
     .test_start                 ( test_start                            ),
     .test_good_end              ( test_good_end                         ),
@@ -1066,8 +1066,10 @@ ciop_fake_iob ciop_fake_iob(
 
     <%
         text = r'''
-        .spc0_inst_done    (`PITON_CORE0_INST_DONE),
-        .pc_w0             (`PITON_CORE0_PC_W0),
+        `ifndef DISABLE_ALL_MONITORS
+          .spc0_inst_done    (`PITON_CORE0_INST_DONE),
+          .pc_w0             (`PITON_CORE0_PC_W0),
+        `endif
         '''
 
         for i in range (PITON_NUM_TILES):

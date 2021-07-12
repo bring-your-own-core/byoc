@@ -58,6 +58,9 @@ set_false_path -from [get_ports trst_ni]
 set_max_delay -datapath_only -from [get_clocks -include_generated_clocks chipset_clk_clk_mmcm] -to [get_clocks tck_i] 15.000
 set_max_delay -datapath_only -from [get_clocks tck_i] -to [get_clocks -include_generated_clocks chipset_clk_clk_mmcm] 15.000
 
+# Retiming
+set_property BLOCK_SYNTH.RETIMING 1 [get_cells -hierarchical *pipe_fma*]
+
 set_property -dict {PACKAGE_PIN Y29 IOSTANDARD LVCMOS33} [get_ports trst_ni]
 set_property -dict {PACKAGE_PIN AD27 IOSTANDARD LVCMOS33} [get_ports tck_i]
 set_property -dict {PACKAGE_PIN W27 IOSTANDARD LVCMOS33} [get_ports td_i]
