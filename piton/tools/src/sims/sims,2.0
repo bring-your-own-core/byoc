@@ -2832,6 +2832,7 @@ sub parse_args
   $ENV{BP_ME_DIR} = $ENV{DV_ROOT} . "/design/chip/tile/blackparrot/bp_me";
   $ENV{BP_BE_DIR} = $ENV{DV_ROOT} . "/design/chip/tile/blackparrot/bp_be";
   $ENV{BP_TOP_DIR} = $ENV{DV_ROOT} . "/design/chip/tile/blackparrot/bp_top";
+  $ENV{HARDFLOAT_DIR} = $ENV{DV_ROOT} . "/design/chip/tile/blackparrot/external/HardFloat";
   push (@{$opt{config_rtl}}, "PITON_OST1")     if ($opt{ost1});
   push (@{$opt{config_rtl}}, "PITON_PICO")     if ($opt{pico});
   push (@{$opt{config_rtl}}, "PITON_PICO")     if ($opt{pico_het});
@@ -2900,6 +2901,7 @@ sub parse_args
 
   #
   push (@{$opt{sim_run_args}}, "-gui") if ($opt{gui}) ;
+  push (@{$opt{vcs_build_args}}, "-assert svaext") ;
   push (@{$opt{vcs_build_args}}, "-debug_all") if ($opt{debug_all}) ;
   push (@{$opt{vcs_build_args}}, "-debug_pp") if ($opt{debug_pp}) ;
   push (@{$opt{vcs_build_args}}, "-CFLAGS \"-I/mnt/users/ssd1/homes/svijay97/BlackParrot/black-parrot-sdk/include -std=c++14\"") ;
